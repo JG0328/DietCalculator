@@ -32,8 +32,20 @@ namespace DietCalculator
             {
                 try
                 {
+                    XmlReaderSettings settings = new XmlReaderSettings();
+                    settings.DtdProcessing = DtdProcessing.Parse;
+                    settings.ValidationType = ValidationType.DTD;
+                    settings.IgnoreWhitespace = true;
+                    settings.XmlResolver = new XmlUrlResolver();
+                    settings.ValidationEventHandler += new ValidationEventHandler(XmlValidationCallBack);
+
+                    // Create the XmlReader object.
+                    XmlReader reader = XmlReader.Create(openFileDialog.FileName, settings);
+
+                    // Parse the file.
+                    while (reader.Read()) ;
+
                     MainController.Instance.GetXmlData(openFileDialog.FileName);
-                    BtnOpenDtd.IsEnabled = true;
                     BtnContinue.IsEnabled = true;
 
                     LabelXml.Content = openFileDialog.SafeFileName;
@@ -56,8 +68,6 @@ namespace DietCalculator
             {
                 try
                 {
-                    //MainController.Instance.Recetas = MainController.XmlToObject<List<Receta>>();
-
                     var infoWindow = new InfoWindow();
                     infoWindow.Show();
                     Close();
@@ -73,37 +83,12 @@ namespace DietCalculator
 
         private void XmlValidationCallBack(object sender, ValidationEventArgs e)
         {
-            if (e.Severity == XmlSeverityType.Warning)
-                MessageBox.Show("Warning: Matching schema not found.  No validation occurred." + e.Message);
-            else
-                MessageBox.Show("Validation error: " + e.Message);
-
-            BtnContinue.IsEnabled = true;
+            BtnContinue.IsEnabled = false;
             BtnOpenXml.IsEnabled = true;
 
             MainController.Instance.IsValid = false;
-        }
 
-        private void BtnOpenDtd_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog
-            {
-                Filter = "Archivos DTD (*.dtd)|*.dtd"
-            };
-
-            if (openFileDialog.ShowDialog().GetValueOrDefault())
-            {
-                LabelDtd.Content = openFileDialog.SafeFileName;
-
-                try
-                {
-                    MainController.Instance.GetDtdData(openFileDialog.FileName);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("ERROR: " + ex.Message);
-                }
-            }
+            throw new Exception("XML is not valid by DTD");
         }
     }
 }

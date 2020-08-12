@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DietCalculator.Logic;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -20,6 +21,42 @@ namespace DietCalculator.Windows
         public PrologWindow()
         {
             InitializeComponent();
+        }
+
+        private void BtnFirst_Click(object sender, RoutedEventArgs e)
+        {
+            var recipes = MainController.Instance.FirstPrologQuery(TxtFirst.Text);
+            ListView.ItemsSource = recipes;
+        }
+
+        private void BtnSecond_Click(object sender, RoutedEventArgs e)
+        {
+            var recipes = MainController.Instance.SecondPrologQuery(TxtSecond.Text);
+            ListView.ItemsSource = recipes;
+        }
+
+        private void BtnThird_Click(object sender, RoutedEventArgs e)
+        {
+            var recipes = MainController.Instance.ThirdPrologQuery(TxtThird.Text);
+            ListView.ItemsSource = recipes;
+        }
+
+        private void BtnFourth_Click(object sender, RoutedEventArgs e)
+        {
+            var recipes = MainController.Instance.FourthPrologQuery(TxtFourth.Text);
+            ListView.ItemsSource = recipes;
+        }
+
+        private void BtnFifth_Click(object sender, RoutedEventArgs e)
+        {
+            var recipes = MainController.Instance.FifthPrologQuery(TxtFifth.Text);
+            ListView.ItemsSource = recipes;
+        }
+
+        private void BtnSixth_Click(object sender, RoutedEventArgs e)
+        {
+            var recipes = MainController.Instance.SixthPrologQuery(TxtSixthIngredient.Text, TxtSixthTool.Text);
+            ListView.ItemsSource = recipes;
         }
     }
 }

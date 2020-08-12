@@ -1,10 +1,12 @@
-﻿using SbsSW.SwiPlCs;
+﻿using IronScheme;
+using Prolog;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Xml;
+using System.Xml.Schema;
 using System.Xml.Serialization;
 
 namespace DietCalculator.Logic
@@ -18,6 +20,8 @@ namespace DietCalculator.Logic
 
         [XmlElement("recetas")]
         public List<Receta> recetas = new List<Receta>();
+
+        private PrologEngine prolog = new PrologEngine(persistentCommandHistory: false);
 
         private MainController()
         {
@@ -39,6 +43,7 @@ namespace DietCalculator.Logic
         {
             XmlContent = File.ReadAllText(path);
             recetas = XmlToObject(XmlContent);
+
             InitializeProlog();
         }
 
@@ -62,48 +67,151 @@ namespace DietCalculator.Logic
         {
             try
             {
-                // Environment Variables
-                Environment.SetEnvironmentVariable("SWI_HOME_DIR", @"C:\\Program Files (x86)\\swipl");
-                Environment.SetEnvironmentVariable("Path", @"C:\\Program Files (x86)\\swipl\\bin");
-                string[] p = { "-q", "-f", Path.GetFullPath("Resources\\recetas.pl").Replace('\\', '/') };
-
-                // Connect to Prolog Engine
-                PlEngine.Initialize(p);
-
-                PlQuery load = new PlQuery($"cargar('{Path.GetFullPath("Resources\\recetas.pl").Replace('\\', '/')}')");
-                load.NextSolution();
+                prolog.Consult(Path.GetFullPath("Resources\\recetas.pl"));
 
                 foreach (var receta in recetas)
                 {
-                    PlQuery q = new PlQuery($"asserta(ingredientes({receta.nombre},[{string.Join(',', receta.ingredientes.Select(x => x.nombre).ToList())}]))");
-                    q.NextSolution();
-
-                    q = new PlQuery($"asserta(herramientas({receta.nombre},[{string.Join(',', receta.herramientas)}]))");
-                    q.NextSolution();
+                    prolog.GetFirstSolution($"asserta(ingredientes({receta.nombre},[{string.Join(',', receta.ingredientes.Select(x => x.nombre).ToList())}])).");
+                    prolog.GetFirstSolution($"asserta(herramientas({receta.nombre},[{string.Join(',', receta.herramientas)}])).");
                 }
-
-                //PlQuery test = new PlQuery("poseeUnIngrediente(leche,X)");
-                //MessageBox.Show(test.SolutionVariables.ToList().Count.ToString());
-
-                //foreach (PlQueryVariables x in test.SolutionVariables)
-                //{
-                //    MessageBox.Show(x["X"].ToString());
-                //}
-
-                // Close Prolog Connection
-                //PlEngine.PlCleanup();
             }
             catch
             {
-                MessageBox.Show("Connection Error: Could not connect to Prolog Engine");
+                MessageBox.Show("ERROR: Could not initialize Prolog");
             }
+        }
+
+        public List<string> FirstPrologQuery(string ingredient)
+        {
+            var l = new List<string>();
+
+            prolog.Query = $"poseeUnIngrediente({ingredient},X).";
+
+            foreach (var s in prolog.SolutionIterator)
+            {
+                foreach (var v in s.VarValuesIterator)
+                {
+                    if (!s.IsLast)
+                        l.Add(v.Value.ToString());
+                }
+            }
+
+            return l;
+        }
+
+        public List<string> SecondPrologQuery(string ingredients)
+        {
+            var l = new List<string>();
+
+            prolog.Query = $"sonParteDeReceta([{ingredients}],X).";
+
+            foreach (var s in prolog.SolutionIterator)
+            {
+                MessageBox.Show(s.ToString());
+                foreach (var v in s.VarValuesIterator)
+                {
+                    if (!s.IsLast)
+                        l.Add(v.Value.ToString());
+                }
+            }
+
+            return l;
+        }
+
+        public List<string> ThirdPrologQuery(string tool)
+        {
+            var l = new List<string>();
+
+            prolog.Query = $"poseeHerramienta({tool},X).";
+
+            foreach (var s in prolog.SolutionIterator)
+            {
+                foreach (var v in s.VarValuesIterator)
+                {
+                    if (!s.IsLast)
+                        l.Add(v.Value.ToString());
+                }
+            }
+
+            return l;
+        }
+
+        public List<string> FourthPrologQuery(string tool)
+        {
+            var l = new List<string>();
+
+            prolog.Query = $"noPoseeHerramienta({tool},X).";
+
+            foreach (var s in prolog.SolutionIterator)
+            {
+                foreach (var v in s.VarValuesIterator)
+                {
+                    if (!s.IsLast)
+                        l.Add(v.Value.ToString());
+                }
+            }
+
+            return l;
+        }
+
+        public List<string> FifthPrologQuery(string ingredient)
+        {
+            var l = new List<string>();
+
+            prolog.Query = $"noPoseeIngrediente({ingredient},X).";
+
+            foreach (var s in prolog.SolutionIterator)
+            {
+                foreach (var v in s.VarValuesIterator)
+                {
+                    if (!s.IsLast)
+                        l.Add(v.Value.ToString());
+                }
+            }
+
+            return l;
+        }
+
+        public List<string> SixthPrologQuery(string ingredient, string tool)
+        {
+            var l = new List<string>();
+
+            prolog.Query = $"noPoseeIngrediente({ingredient},{tool},X).";
+
+            foreach (var s in prolog.SolutionIterator)
+            {
+                foreach (var v in s.VarValuesIterator)
+                {
+                    if (!s.IsLast)
+                        l.Add(v.Value.ToString());
+                }
+            }
+
+            return l;
+        }
+
+        public double FirstScheme(float weight, float height, int age, int gender)
+        {
+            var result = $@"(define (calcularIMC peso estatura)
+                   (/ peso (expt estatura 2)))
+
+                (define (porcentajeGrasaCorporal peso estatura edad sexo)
+                  (if (= sexo 1)  
+                    (+ (* 1.51 (calcularIMC peso estatura)) (- (* 0.70 edad)) (- (* 3.6 sexo)) 1.4)
+                    (+ (* 1.39 (calcularIMC peso estatura)) (+ (* 0.16 edad)) (- (* 10.34 sexo)) (- 9))))
+                
+                (porcentajeGrasaCorporal {weight} {height} {age} {gender})
+                ".Eval<double>();
+
+            return result;
         }
 
         public static List<Receta> XmlToObject(string xml)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(List<Receta>), new XmlRootAttribute("recetas"));
             var textReader = new StringReader(xml);
-            var xmlReader = XmlReader.Create(textReader);
+            var settings = new XmlReaderSettings { DtdProcessing = DtdProcessing.Ignore };
+            var xmlReader = XmlReader.Create(textReader, settings);
             return (List<Receta>)serializer.Deserialize(xmlReader);
         }
     }

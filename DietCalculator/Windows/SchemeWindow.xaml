@@ -1,0 +1,69 @@
+﻿<Window x:Class="DietCalculator.Windows.SchemeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DietCalculator.Windows"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        Title="Cálculos" Height="500" Width="500" WindowStartupLocation="CenterScreen">
+    <materialDesign:ColorZone HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <StackPanel Margin="16">
+            <GroupBox FontSize="16" FontWeight="Bold">
+                <GroupBox.Header>
+                    Grasa Corporal
+                </GroupBox.Header>
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Content="Peso:" FontWeight="Bold" Grid.Column="0"/>
+                            <TextBox Name="TxtWeight" Grid.Column="1"/>
+                        </Grid>
+                        <Grid Grid.Row="0" Grid.Column="1" Margin="10 0 0 0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Content="Altura:" FontWeight="Bold" Grid.Column="0"/>
+                            <TextBox Name="TxtHeight" Grid.Column="1"/>
+                        </Grid>
+                        <Grid Grid.Row="1" Grid.Column="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Content="Edad:" FontWeight="Bold" Grid.Column="0"/>
+                            <TextBox Name="TxtAge" Grid.Column="1"/>
+                        </Grid>
+                        <Grid Grid.Row="1" Grid.Column="1" Margin="10 0 0 0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Content="Sexo:" FontWeight="Bold" Grid.Column="0"/>
+                            <ComboBox x:Name="CbxGender" Grid.Column="1">
+                                <ComboBoxItem Content="Masculino"/>
+                                <ComboBoxItem Content="Femenino"/>
+                            </ComboBox>
+                        </Grid>
+                        <Label x:Name="LblResult" Content="0.00" Grid.Row="2" Grid.Column="0" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
+                        <Button x:Name="BtnCalculate" Content="Calcular" Grid.Row="2" Grid.Column="1" Margin="16 16 0 0" Click="BtnCalculate_Click"/>
+                    </Grid>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
+    </materialDesign:ColorZone>
+</Window>

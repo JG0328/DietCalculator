@@ -38,12 +38,12 @@ namespace DietCalculator.Windows
         {
             var window = new PrologWindow();
             window.Show();
-            Close();
         }
 
         private void BtnScheme_Click(object sender, RoutedEventArgs e)
         {
-
+            var window = new SchemeWindow();
+            window.Show();
         }
     }
 }
