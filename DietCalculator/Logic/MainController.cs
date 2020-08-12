@@ -58,11 +58,6 @@ namespace DietCalculator.Logic
             return tuple;
         }
 
-        public void GetDtdData(string path)
-        {
-
-        }
-
         private void InitializeProlog()
         {
             try
@@ -223,6 +218,15 @@ namespace DietCalculator.Logic
                                 (* (* 20.0 peso) 7.0))
                              (platosConsumidorSemanalDisminuirPeso {weight})".Eval<double>();
             return result;
+        }
+
+        public RecipeModel GetRecipe(string name)
+        {
+            return recetas.Where(x => x.nombre == name).Select(x => new RecipeModel
+            {
+                Name = x.nombre,
+                Calories = x.GetCalories()
+            }).First();
         }
 
         public static List<Receta> XmlToObject(string xml)

@@ -1,6 +1,7 @@
 ﻿using DietCalculator.Logic;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -26,37 +27,37 @@ namespace DietCalculator.Windows
         private void BtnFirst_Click(object sender, RoutedEventArgs e)
         {
             var recipes = MainController.Instance.FirstPrologQuery(TxtFirst.Text);
-            ListView.ItemsSource = recipes;
+            ListView.ItemsSource = recipes.Select(x => MainController.Instance.GetRecipe(x)).ToList();
         }
 
         private void BtnSecond_Click(object sender, RoutedEventArgs e)
         {
             var recipes = MainController.Instance.SecondPrologQuery(TxtSecond.Text);
-            ListView.ItemsSource = recipes;
+            ListView.ItemsSource = recipes.Select(x => MainController.Instance.GetRecipe(x)).ToList();
         }
 
         private void BtnThird_Click(object sender, RoutedEventArgs e)
         {
             var recipes = MainController.Instance.ThirdPrologQuery(TxtThird.Text);
-            ListView.ItemsSource = recipes;
+            ListView.ItemsSource = recipes.Select(x => MainController.Instance.GetRecipe(x)).ToList();
         }
 
         private void BtnFourth_Click(object sender, RoutedEventArgs e)
         {
             var recipes = MainController.Instance.FourthPrologQuery(TxtFourth.Text);
-            ListView.ItemsSource = recipes;
+            ListView.ItemsSource = recipes.Select(x => MainController.Instance.GetRecipe(x)).ToList();
         }
 
         private void BtnFifth_Click(object sender, RoutedEventArgs e)
         {
             var recipes = MainController.Instance.FifthPrologQuery(TxtFifth.Text);
-            ListView.ItemsSource = recipes;
+            ListView.ItemsSource = recipes.Select(x => MainController.Instance.GetRecipe(x)).ToList();
         }
 
         private void BtnSixth_Click(object sender, RoutedEventArgs e)
         {
             var recipes = MainController.Instance.SixthPrologQuery(TxtSixthIngredient.Text, TxtSixthTool.Text);
-            ListView.ItemsSource = recipes;
+            ListView.ItemsSource = recipes.Select(x => MainController.Instance.GetRecipe(x)).ToList();
         }
     }
 }
