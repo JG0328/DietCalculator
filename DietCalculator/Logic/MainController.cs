@@ -107,13 +107,14 @@ namespace DietCalculator.Logic
 
             foreach (var s in prolog.SolutionIterator)
             {
-                MessageBox.Show(s.ToString());
                 foreach (var v in s.VarValuesIterator)
                 {
                     if (!s.IsLast)
                         l.Add(v.Value.ToString());
                 }
             }
+
+            l = l.Distinct().ToList();
 
             return l;
         }
@@ -124,7 +125,7 @@ namespace DietCalculator.Logic
 
             prolog.Query = $"poseeHerramienta({tool},X).";
 
-            foreach (var s in prolog.SolutionIterator)
+            foreach (var s in prolog.GetEnumerator())
             {
                 foreach (var v in s.VarValuesIterator)
                 {
@@ -176,12 +177,13 @@ namespace DietCalculator.Logic
         {
             var l = new List<string>();
 
-            prolog.Query = $"noPoseeIngrediente({ingredient},{tool},X).";
+            prolog.Query = $"noPoseeIngredienteHerramienta({ingredient},{tool},X).";
 
-            foreach (var s in prolog.SolutionIterator)
+            foreach (var s in prolog.GetEnumerator())
             {
                 foreach (var v in s.VarValuesIterator)
                 {
+
                     if (!s.IsLast)
                         l.Add(v.Value.ToString());
                 }
@@ -203,6 +205,23 @@ namespace DietCalculator.Logic
                 (porcentajeGrasaCorporal {weight} {height} {age} {gender})
                 ".Eval<double>();
 
+            return result;
+        }
+
+        public double SecondScheme(float weigth)
+        {
+            var result = $@"(define (platosConsumirDiaMantenerPesoActual peso)
+                                (* 25.0 peso))
+                            (platosConsumirDiaMantenerPesoActual {weigth})".Eval<double>();
+
+            return result;
+        }
+
+        public double ThirdScheme(float weight)
+        {
+            var result = $@"(define (platosConsumidorSemanalDisminuirPeso peso)
+                                (* (* 20.0 peso) 7.0))
+                             (platosConsumidorSemanalDisminuirPeso {weight})".Eval<double>();
             return result;
         }
 

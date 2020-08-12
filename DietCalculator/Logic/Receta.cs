@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
 
@@ -14,5 +15,10 @@ namespace DietCalculator.Logic
         public List<string> herramientas = new List<string>();
         [XmlArrayItem("paso")]
         public List<string> procedimiento = new List<string>();
+
+        public float GetCalories()
+        {
+            return ingredientes.Sum(x => x.calorias);
+        }
     }
 }

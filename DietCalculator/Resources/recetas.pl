@@ -1,7 +1,7 @@
 existe(X,[X|_]).
 existe(X,[_|Cola]):-existe(X,Cola).
 
-sonParteDeReceta(List1,Resultado) :- ingredientes(Resultado,List2), forall(member(Element,List1), member(Element,List2)).
+sonParteDeReceta(List1,Salida) :- ingredientes(Salida,List2), existe(Element,List1), existe(Element,List2).
 
 poseeUnIngrediente(Ingrediente,Resultado) :- ingredientes(Resultado,L), existe(Ingrediente,L).
 
@@ -14,4 +14,3 @@ noPoseeHerramienta(Herramienta,Resultado) :- herramientas(Resultado,L), not(exis
 noPoseeIngrediente(Ingrediente,Resultado) :- ingredientes(Resultado,L), not(existe(Ingrediente,L)).
 
 noPoseeIngredienteHerramienta(Ingrediente, Herramienta,Resultado) :- ingredientes(Resultado,L), not(existe(Ingrediente,L)), herramientas(Resultado,L2), not(existe(Herramienta,L2)).
-
