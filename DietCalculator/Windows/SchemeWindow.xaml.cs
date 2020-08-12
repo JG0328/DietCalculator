@@ -50,7 +50,7 @@ namespace DietCalculator.Windows
                     list.Add(receta.nombre);
             }
 
-            ListView.ItemsSource = list.Distinct().ToList();
+            ListView.ItemsSource = list.Select(x => MainController.Instance.GetRecipe(x)).ToList();
         }
 
         private void BtnReduce_Click(object sender, RoutedEventArgs e)
@@ -66,7 +66,7 @@ namespace DietCalculator.Windows
                     list.Add(receta.nombre);
             }
 
-            ListView.ItemsSource = list.Distinct().ToList();
+            ListView.ItemsSource = list.Select(x => MainController.Instance.GetRecipe(x)).ToList();
         }
     }
 }

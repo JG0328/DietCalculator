@@ -106,7 +106,8 @@
             <ListView x:Name="ListView" Height="130">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn/>
+                        <GridViewColumn Header="Receta" Width="Auto" DisplayMemberBinding="{Binding Path=Name}"/>
+                        <GridViewColumn Header="Calorías" Width="Auto" DisplayMemberBinding="{Binding Path=Calories}"/>
                     </GridView>
                 </ListView.View>
             </ListView>
